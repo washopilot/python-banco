@@ -12,8 +12,8 @@ class Login():
         self.ui_file_name = "gui/login.ui"
         self.ui_file = QFile(self.ui_file_name)
         if not self.ui_file.open(QIODevice.OpenModeFlag.ReadOnly):
-            print(f'Cannot open {self.ui_file_name}: {
-                  self.ui_file.errorString()}')
+            print(
+                f'Cannot open {self.ui_file_name}: {self.ui_file.errorString()}')
             sys.exit(-1)
         self.loader = QUiLoader()
         self.window = self.loader.load(self.ui_file)
