@@ -1,37 +1,40 @@
 import sys
-from PySide6.QtUiTools import QUiLoader
+
 from PySide6.QtCore import QFile, QIODevice
-from PySide6.QtWidgets import QLabel, QLineEdit, QPushButton
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QLabel, QLineEdit, QMainWindow, QPushButton
 
 import gui.imagenes_rc
 
 
-class Login():
+class Login(QMainWindow):
     # Constructor y controla la visualización del Widget
     def __init__(self):
-        self.ui_file_name = "gui/login.ui"
-        self.ui_file = QFile(self.ui_file_name)
-        if not self.ui_file.open(QIODevice.OpenModeFlag.ReadOnly):
-            print(
-                f'Cannot open {self.ui_file_name}: {self.ui_file.errorString()}')
+        super(Login, self).__init__()
+        ui_file_name = "gui/login.ui"
+        ui_file = QFile(ui_file_name)
+        if not ui_file.open(QIODevice.OpenModeFlag.ReadOnly):
+            print(f'Cannot open {ui_file_name}: {ui_file.errorString()}')
             sys.exit(-1)
-        self.loader = QUiLoader()
-        self.window = self.loader.load(self.ui_file)
-        self.ui_file.close()
-        if not self.window:
-            print(self.loader.errorString())
+        loader = QUiLoader()
+        self.ui = loader.load(ui_file)
+        ui_file.close()
+
+        if not self.ui:
+            print(loader.errorString())
             sys.exit(-1)
 
-        self.window.findChild(QLabel, 'lblMensaje').setText('')
+        self.setCentralWidget(self.ui)
+
+        self.ui.findChild(QLabel, 'lblMensaje').setText('')
         self.initGUI()
-        self.window.show()
 
     # Validaciones
     def ingresar(self):
-        self.window.findChild(QLabel, 'lblMensaje').setText('')
-        txtUsuario: QLineEdit = self.window.findChild(QLineEdit, 'txtUsuario')
-        txtClave: QLineEdit = self.window.findChild(QLineEdit, 'txtClave')
-        lblMensaje: QLabel = self.window.findChild(QLabel, 'lblMensaje')
+        self.ui.findChild(QLabel, 'lblMensaje').setText('')
+        txtUsuario: QLineEdit = self.ui.findChild(QLineEdit, 'txtUsuario')
+        txtClave: QLineEdit = self.ui.findChild(QLineEdit, 'txtClave')
+        lblMensaje: QLabel = self.ui.findChild(QLabel, 'lblMensaje')
         if txtUsuario.text() == '' and txtClave.text() == '':
             lblMensaje.setText(
                 'Ingrese un usuario y contraseña válidos')
@@ -51,6 +54,6 @@ class Login():
 
     # Al pulsar Acceder
     def initGUI(self):
-        btnAcceder: QPushButton = self.window.findChild(
+        btnAcceder: QPushButton = self.ui.findChild(
             QPushButton, 'btnAcceder')
         btnAcceder.clicked.connect(self.ingresar)
