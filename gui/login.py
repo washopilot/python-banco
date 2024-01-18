@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PySide6.QtCore import QFile, QIODevice
@@ -6,12 +7,19 @@ from PySide6.QtWidgets import QLabel, QLineEdit, QMainWindow, QPushButton
 
 import gui.imagenes_rc
 
+if getattr(sys, 'frozen', False):
+    # Estamos en un ejecutable pyinstaller
+    dir_path = sys._MEIPASS
+else:
+    # Estamos en un script normal
+    dir_path = os.path.dirname(os.path.abspath(__file__))
 
 class Login(QMainWindow):
     # Constructor y controla la visualización del Widget
     def __init__(self):
         super(Login, self).__init__()
-        ui_file_name = "gui/login.ui"
+        print(dir_path)
+        ui_file_name = os.path.join(dir_path, 'login.ui')
         ui_file = QFile(ui_file_name)
         if not ui_file.open(QIODevice.OpenModeFlag.ReadOnly):
             print(f'Cannot open {ui_file_name}: {ui_file.errorString()}')
